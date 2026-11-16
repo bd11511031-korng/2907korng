@@ -1,162 +1,1225 @@
-<!doctype html>
-<html lang="zh-Hant" data-theme="dark">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="數位多媒體學生的視覺設計、互動網頁與影像作品集。"
-    />
-    <title>孙明光｜數位多媒體作品集</title>
-    <link rel="stylesheet" href="styles.css" />
-    <script defer src="script.js"></script>
-  </head>
-  <body>
-    <a class="skip-link" href="#main-content">跳到主要內容</a>
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>孫明光 | 個人作品集 & 專業主頁</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans TC', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#F0F5FF',
+                            100: '#E0EAFF',
+                            500: '#6366F1',
+                            600: '#4F46E5',
+                            700: '#4338CA',
+                            900: '#1E1B4B',
+                        },
+                        skybrand: {
+                            500: '#0EA5E9',
+                            600: '#0284C7',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Modern Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94A3B8;
+        }
 
-    <header class="site-header">
-      <a class="brand" href="#top" aria-label="回到首頁">
-        <span class="brand-mark">YA</span>
-        <span class="brand-copy">
-          <strong>LIN YU-AN</strong>
-          <small>Digital Media Student</small>
-        </span>
-      </a>
+        /* Glassmorphism background */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+        }
 
-      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
-        <span>選單</span>
-      </button>
+        /* Subtle grid background pattern */
+        .bg-grid-pattern {
+            background-size: 32px 32px;
+            background-image: 
+                linear-gradient(to right, rgba(226, 232, 240, 0.4) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(226, 232, 240, 0.4) 1px, transparent 1px);
+        }
 
-      <nav id="site-nav" class="site-nav" aria-label="主要導覽">
-        <a href="#about">關於我</a>
-        <a href="#works">作品展示</a>
-        <a href="#contact">聯絡我</a>
-        <button id="theme-toggle" class="theme-toggle" type="button" aria-pressed="false">
-          <span class="theme-icon" aria-hidden="true">◐</span>
-          <span>切換主題</span>
-        </button>
-      </nav>
+        /* Photo Upload Indicator overlay pulse */
+        .photo-badge-pulse {
+            animation: pulse-border 2s infinite;
+        }
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4); }
+            70% { box-shadow: 0 0 0 8px rgba(79, 70, 229, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(79, 70, 229, 0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-brand-100 selection:text-brand-700 bg-grid-pattern">
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center gap-3 bg-slate-900 text-white px-5 py-3.5 rounded-xl shadow-2xl border border-slate-700">
+        <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400"></i>
+        <span id="toast-message" class="text-sm font-medium">複製成功！</span>
+    </div>
+
+    <!-- Lightbox Modal for Photo Gallery -->
+    <div id="lightbox-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center p-4">
+        <div class="relative max-w-4xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl border border-slate-700/20 transform scale-95 transition-transform duration-300" id="lightbox-card">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50">
+                <div class="flex items-center gap-2">
+                    <span id="lightbox-tag" class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-100 text-brand-700">生活剪影</span>
+                    <h4 id="lightbox-title" class="font-bold text-slate-800 text-base">照片標題</h4>
+                </div>
+                <button onclick="closeLightbox()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-200 transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <!-- Modal Image Body -->
+            <div class="relative bg-slate-900 flex items-center justify-center max-h-[70vh] overflow-hidden">
+                <img id="lightbox-img" src="" alt="Enlarged photo" class="max-h-[70vh] w-auto object-contain">
+            </div>
+            <!-- Modal Footer Info -->
+            <div class="p-4 bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-slate-500">
+                <p id="lightbox-desc" class="text-slate-600 text-sm">照片描述文字</p>
+                <div class="bg-slate-100 px-3 py-1.5 rounded-lg text-slate-500 font-mono text-xs shrink-0 flex items-center gap-1">
+                    <i data-lucide="image" class="w-3.5 h-3.5"></i>
+                    <span id="lightbox-hint">建議替換照片尺寸: 800 x 600</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-40 w-full glass-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-skybrand-500 text-white flex items-center justify-center font-bold text-xl shadow-md group-hover:scale-105 transition-transform">
+                    孫
+                </div>
+                <div>
+                    <span class="font-extrabold text-slate-900 tracking-tight text-lg block leading-none">孫明光</span>
+                    <span class="text-[10px] text-slate-400 font-medium tracking-wide">黎明科技·數位多媒體</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-600">
+                <a href="#about" class="hover:text-brand-600 transition-colors">關於我</a>
+                <a href="#skills" class="hover:text-brand-600 transition-colors">專業技能</a>
+                <a href="#projects" class="hover:text-brand-600 transition-colors">專案作品</a>
+                <a href="#gallery" class="hover:text-brand-600 transition-colors">生活相簿</a>
+                <a href="#interests" class="hover:text-brand-600 transition-colors">生活哲學</a>
+                <a href="#contact" class="hover:text-brand-600 transition-colors">聯絡方式</a>
+            </nav>
+
+            <a href="#contact" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-brand-600 hover:bg-brand-700 rounded-xl transition-all shadow-md shadow-brand-500/20 active:scale-95">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                與我聯繫
+            </a>
+
+            <!-- Mobile Hamburger Button -->
+            <button id="mobile-menu-btn" class="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 focus:outline-none">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white/95 backdrop-blur-lg px-4 py-4 space-y-2 text-sm font-medium text-slate-700">
+            <a href="#about" class="block px-3 py-2 rounded-lg hover:bg-slate-100">關於我</a>
+            <a href="#skills" class="block px-3 py-2 rounded-lg hover:bg-slate-100">專業技能</a>
+            <a href="#projects" class="block px-3 py-2 rounded-lg hover:bg-slate-100">專案作品</a>
+            <a href="#gallery" class="block px-3 py-2 rounded-lg hover:bg-slate-100">生活相簿</a>
+            <a href="#interests" class="block px-3 py-2 rounded-lg hover:bg-slate-100">生活哲學</a>
+            <a href="#contact" class="block px-3 py-2 rounded-lg hover:bg-slate-100">聯絡方式</a>
+        </div>
     </header>
 
-    <main id="main-content">
-      <section id="top" class="hero section-shell" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <p class="eyebrow">DIGITAL MEDIA · PORTFOLIO 2026</p>
-          <h1 id="hero-title">把想像，<span>做成可以互動的作品。</span></h1>
-          <p class="hero-lead">
-            我是林予安，正在學習用影像、介面與程式，把觀察到的生活轉換成有節奏、有溫度的數位體驗。
-          </p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="#works">瀏覽作品 <span aria-hidden="true">↗</span></a>
-            <a class="button button-quiet" href="#about">認識我</a>
-          </div>
-          <div class="hero-meta" aria-label="個人專長摘要">
-            <div><strong>03</strong><span>作品類別</span></div>
-            <div><strong>08</strong><span>完成專案</span></div>
-            <div><strong>01</strong><span>創作方向</span></div>
-          </div>
-        </div>
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-24">
 
-        <div class="hero-visual" aria-label="作品集視覺預覽">
-          <div class="visual-grid"></div>
-          <div class="visual-note note-top">Selected work<br /><strong>01 / 08</strong></div>
-          <div class="visual-card">
-            <div class="visual-card-top"><span>01</span><span>motion study</span></div>
-            <div class="visual-orbit"><span></span><span></span><span></span></div>
-            <p>光的<br /><em>練習</em></p>
-            <div class="visual-card-bottom"><span>VISUAL / 2026</span><span>↗</span></div>
-          </div>
-          <div class="visual-note note-bottom">Scroll to explore<br /><span>↓</span></div>
-        </div>
-      </section>
+        <!-- HERO SECTION -->
+        <section class="pt-4 pb-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                
+                <!-- Hero Left Column -->
+                <div class="lg:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-100 text-brand-700 text-xs font-semibold tracking-wide">
+                        <i data-lucide="graduation-cap" class="w-4 h-4 text-brand-600"></i>
+                        黎明技術學院 數位多媒體系
+                    </div>
 
-      <section id="about" class="about section-shell" aria-labelledby="about-title">
-        <div class="section-heading">
-          <p class="eyebrow">01 / ABOUT</p>
-          <h2 id="about-title">先觀察，再創作。</h2>
-        </div>
-        <div class="about-grid">
-          <p class="about-statement">
-            我喜歡把複雜的訊息整理成清楚的畫面，也喜歡研究使用者如何在一個介面裡移動、停留與發現。
-          </p>
-          <div class="about-details">
-            <p>目前就讀數位多媒體相關科系，創作練習集中在品牌視覺、互動網頁與動態影像。</p>
-            <div class="skill-list" aria-label="技能列表">
-              <span>Visual Design</span><span>Web Design</span><span>Motion</span><span>Creative Coding</span>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                        探索邏輯與媒體之美 <br>
+                        我是 <span class="bg-gradient-to-r from-brand-600 via-indigo-600 to-skybrand-500 bg-clip-text text-transparent">孫明光</span>
+                    </h1>
+
+                    <!-- Motto Box -->
+                    <div class="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-sm relative overflow-hidden group">
+                        <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-brand-600 to-skybrand-500"></div>
+                        <div class="flex items-start gap-3.5 pl-2">
+                            <i data-lucide="quote" class="w-6 h-6 text-brand-600 shrink-0 mt-0.5"></i>
+                            <div>
+                                <p class="text-slate-800 text-base sm:text-lg font-semibold italic">
+                                    「喜歡簡單生活，也喜歡認真對待每一件事。」
+                                </p>
+                                <p class="text-xs text-slate-400 mt-1 font-mono">Personal Philosophy & Life Motto</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-slate-600 text-base sm:text-lg leading-relaxed">
+                        結合<strong class="text-slate-900 font-semibold">數位多媒體展示</strong>、<strong class="text-slate-900 font-semibold">程式開發編程</strong>與<strong class="text-slate-900 font-semibold">微積分嚴密邏輯</strong>。以專注與簡約的生活態度，用心完成每一個專案細節。
+                    </p>
+
+                    <!-- Quick Action Buttons -->
+                    <div class="flex flex-wrap items-center gap-4 pt-2">
+                        <a href="#projects" class="px-6 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-sm transition-all shadow-lg shadow-slate-900/10 flex items-center gap-2 active:scale-95">
+                            <i data-lucide="folder-code" class="w-4 h-4"></i>
+                            瀏覽作品集
+                        </a>
+                        <a href="#gallery" class="px-6 py-3.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-medium text-sm transition-all flex items-center gap-2 active:scale-95 shadow-sm">
+                            <i data-lucide="camera" class="w-4 h-4 text-brand-600"></i>
+                            查看生活相簿
+                        </a>
+                    </div>
+
+                    <!-- Statistics counter row -->
+                    <div class="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200/80">
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-center shadow-2xs">
+                            <span class="block font-extrabold text-2xl text-slate-900 font-mono">3+</span>
+                            <span class="text-xs text-slate-500">核心能力特長</span>
+                        </div>
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-center shadow-2xs">
+                            <span class="block font-extrabold text-2xl text-brand-600 font-mono">100%</span>
+                            <span class="text-xs text-slate-500">專注與嚴謹態度</span>
+                        </div>
+                        <div class="bg-white p-3.5 rounded-xl border border-slate-100 text-center shadow-2xs">
+                            <span class="block font-extrabold text-2xl text-skybrand-500 font-mono">∞</span>
+                            <span class="text-xs text-slate-500">簡單生活追求</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Right Profile Card & Photo Replacement Placeholder -->
+                <div class="lg:col-span-5">
+                    <div class="relative mx-auto max-w-sm lg:max-w-none">
+                        <!-- Glow effect -->
+                        <div class="absolute -inset-1 rounded-3xl bg-gradient-to-r from-brand-600 to-skybrand-500 opacity-20 blur-xl"></div>
+
+                        <!-- Card Body -->
+                        <div class="relative bg-white border border-slate-200/90 rounded-3xl p-6 shadow-xl space-y-6">
+                            
+                            <!-- 📸 Avatar Photo Placeholder Box (Instructions inside comments & UI) -->
+                            <div class="relative group rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 aspect-square flex items-center justify-center">
+                                <!-- 💡 提示：更換為孫明光個人大頭照，請替換下方 img src -->
+                                <img id="hero-avatar-img" 
+                                     src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80" 
+                                     alt="孫明光 大頭照" 
+                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                     onerror="this.style.display='none'; document.getElementById('avatar-fallback').classList.remove('hidden');" />
+
+                                <!-- Fallback Vector graphic if image is missing -->
+                                <div id="avatar-fallback" class="hidden flex-col items-center justify-center p-6 text-center text-slate-400">
+                                    <div class="w-20 h-20 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center font-bold text-3xl mb-2">
+                                        明光
+                                    </div>
+                                    <span class="text-xs font-mono">Personal Photo</span>
+                                </div>
+
+                                <!-- Photo replacement helper badge -->
+                                <div class="absolute bottom-3 left-3 right-3 bg-slate-900/80 backdrop-blur-md text-white text-xs py-2 px-3 rounded-xl flex items-center justify-between opacity-90 group-hover:opacity-100 transition-opacity">
+                                    <span class="flex items-center gap-1.5 font-medium">
+                                        <i data-lucide="camera" class="w-3.5 h-3.5 text-brand-400"></i>
+                                        可替換個人生活大頭照
+                                    </span>
+                                    <span class="text-[10px] bg-brand-600 px-1.5 py-0.5 rounded font-mono">400x400</span>
+                                </div>
+                            </div>
+
+                            <!-- Person Brief Summary -->
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-500 flex items-center gap-1.5">
+                                        <i data-lucide="user" class="w-4 h-4 text-brand-600"></i> 姓名
+                                    </span>
+                                    <span class="font-bold text-slate-900">孫明光 (Sun Mingguang)</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-500 flex items-center gap-1.5">
+                                        <i data-lucide="school" class="w-4 h-4 text-brand-600"></i> 就讀學校
+                                    </span>
+                                    <span class="font-medium text-slate-800">黎明技術學院</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-slate-500 flex items-center gap-1.5">
+                                        <i data-lucide="sparkles" class="w-4 h-4 text-brand-600"></i> 專業主修
+                                    </span>
+                                    <span class="font-medium text-slate-800">數位多媒體系</span>
+                                </div>
+                            </div>
+
+                            <!-- Social Direct Copy Links -->
+                            <div class="pt-2 border-t border-slate-100 flex items-center justify-around text-slate-500 text-xs font-medium">
+                                <button onclick="copyToClipboard('bd1151031@venus.lit.edu.tw', 'Email')" class="hover:text-brand-600 flex items-center gap-1 transition-colors">
+                                    <i data-lucide="mail" class="w-3.5 h-3.5"></i> Email
+                                </button>
+                                <span class="text-slate-200">|</span>
+                                <button onclick="copyToClipboard('korng2907', 'Line ID')" class="hover:text-emerald-600 flex items-center gap-1 transition-colors">
+                                    <i data-lucide="message-circle" class="w-3.5 h-3.5"></i> Line
+                                </button>
+                                <span class="text-slate-200">|</span>
+                                <button onclick="copyToClipboard('oengmengkarng', 'Instagram')" class="hover:text-rose-600 flex items-center gap-1 transition-colors">
+                                    <i data-lucide="instagram" class="w-3.5 h-3.5"></i> IG
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="works" class="works section-shell" aria-labelledby="works-title">
-        <div class="section-heading works-heading">
-          <div>
-            <p class="eyebrow">02 / SELECTED WORKS</p>
-            <h2 id="works-title">正在形成的作品集。</h2>
-          </div>
-          <p class="section-note">每一個作品，都是一次重新整理問題的方法。</p>
-        </div>
 
-        <div class="filter-bar" role="group" aria-label="作品分類">
-          <button class="filter-button is-active" type="button" data-filter="all">全部 <span>08</span></button>
-          <button class="filter-button" type="button" data-filter="visual">視覺設計 <span>03</span></button>
-          <button class="filter-button" type="button" data-filter="web">網頁互動 <span>03</span></button>
-          <button class="filter-button" type="button" data-filter="motion">動態影像 <span>02</span></button>
-        </div>
+        <!-- ABOUT ME & LIFE FEATURE SECTION -->
+        <section id="about" class="scroll-mt-20">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">關於我 & 專業理念</h2>
+                <p class="text-slate-500 mt-2 text-base">以數理微積分為邏輯基石，用程式與多媒體傳遞簡單而認真的生活態度</p>
+            </div>
 
-        <div class="project-grid">
-          <article class="project-card project-featured" data-category="web">
-            <div class="project-art art-lumen"><span>LUMEN</span><i></i></div>
-            <div class="project-info"><p class="project-type">WEB INTERACTION · 2026</p><h3>Lumen 光影展覽網站</h3><p>以捲動敘事與互動卡片介紹校內光影展。</p><a href="#contact" class="text-link">查看專案 <span>↗</span></a></div>
-          </article>
-          <article class="project-card" data-category="visual">
-            <div class="project-art art-tide"><span>潮汐<br />TIDE</span><i></i></div>
-            <div class="project-info"><p class="project-type">VISUAL IDENTITY · 2026</p><h3>潮汐品牌識別</h3><p>從海岸線提取節奏，轉換成一組品牌視覺。</p><a href="#contact" class="text-link">查看專案 <span>↗</span></a></div>
-          </article>
-          <article class="project-card" data-category="motion">
-            <div class="project-art art-rhythm"><span>RHYTHM<br />OF AIR</span><i></i></div>
-            <div class="project-info"><p class="project-type">MOTION STUDY · 2025</p><h3>空氣的節奏</h3><p>用形狀、速度與聲音做一段動態練習。</p><a href="#contact" class="text-link">查看專案 <span>↗</span></a></div>
-          </article>
-          <article class="project-card" data-category="visual">
-            <div class="project-art art-letter"><span>A<br />Z</span><i></i></div>
-            <div class="project-info"><p class="project-type">EDITORIAL DESIGN · 2025</p><h3>字體採集誌</h3><p>記錄城市裡容易被忽略的字體風景。</p><a href="#contact" class="text-link">查看專案 <span>↗</span></a></div>
-          </article>
-          <article class="project-card" data-category="web">
-            <div class="project-art art-orbit"><span>ORBIT<br />LAB</span><i></i></div>
-            <div class="project-info"><p class="project-type">CREATIVE CODING · 2025</p><h3>Orbit 互動實驗室</h3><p>以滑鼠移動探索軌道、速度與色彩。</p><a href="#contact" class="text-link">查看專案 <span>↗</span></a></div>
-          </article>
-          <article class="project-card" data-category="motion">
-            <div class="project-art art-frame"><span>FRAME<br />BY FRAME</span><i></i></div>
-            <div class="project-info"><p class="project-type">SHORT FILM · 2025</p><h3>一格一格的日常</h3><p>將日常片段剪輯成一封給自己的影像信。</p><a href="#contact" class="text-link">查看專案 <span>↗</span></a></div>
-          </article>
-        </div>
-        <p id="empty-state" class="empty-state" hidden>這個分類目前還在累積中，換一個分類看看。</p>
-      </section>
+            <!-- Narrative Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <!-- Card 1 -->
+                <div class="bg-white p-7 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mb-5">
+                        <i data-lucide="code-2" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2.5">語法與邏輯的碰撞</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        在黎明技術學院數位多媒體系的學習過程中，我不僅專注於媒體視覺的呈現，更深入研究寫代碼（Coding）。透過程式邏輯將複雜問題模組化，創造高互動性的數位實體。
+                    </p>
+                </div>
 
-      <section id="contact" class="contact section-shell" aria-labelledby="contact-title">
-        <div class="contact-intro">
-          <p class="eyebrow">03 / CONTACT</p>
-          <h2 id="contact-title">一起做一個<br /><span>值得被看見的作品。</span></h2>
-          <p>如果你想聊聊設計、網站或下一個合作提案，歡迎留下訊息。</p>
-          <a class="contact-email" href="mailto:hello@yuan-portfolio.example">hello@yuan-portfolio.example <span>↗</span></a>
-        </div>
-        <form id="contact-form" class="contact-form">
-          <label for="name">你的名字</label>
-          <input id="name" name="name" type="text" placeholder="例如：王小明" required />
-          <label for="email">電子郵件</label>
-          <input id="email" name="email" type="email" placeholder="you@example.com" required />
-          <label for="message">想聊聊什麼？</label>
-          <textarea id="message" name="message" rows="4" placeholder="簡單描述你的想法……" required></textarea>
-          <button class="button button-primary form-submit" type="submit">送出訊息 <span aria-hidden="true">↗</span></button>
-          <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
-        </form>
-      </section>
+                <!-- Card 2 -->
+                <div class="bg-white p-7 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-5">
+                        <i data-lucide="binary" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2.5">微積分之美</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        微積分對我而言不僅是一門學問，更是理解動態變化與邏輯推演的思維工具。從變化率到累積量，嚴謹的數理推理訓練讓我能在寫代碼時擁有極佳的抽象分析能力。
+                    </p>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white p-7 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
+                    <div class="w-12 h-12 rounded-xl bg-skybrand-500/10 text-skybrand-600 flex items-center justify-center mb-5">
+                        <i data-lucide="coffee" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2.5">簡單的生活學</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        「喜歡簡單生活，也喜歡認真對待每一件事。」剔除無謂的繁雜，專注於當下的每一行代碼、每一頁書籍與每一刻高品質的睡眠與休息。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Life Snippets Photo Showcase (3 Feature Cards with replaceable image placeholders) -->
+            <div class="bg-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-xl">
+                <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+                    <div>
+                        <span class="text-brand-400 font-mono text-xs font-semibold tracking-wider uppercase block mb-1">Life & Study Highlights</span>
+                        <h3 class="text-2xl font-bold">生活剪影 Showcase</h3>
+                    </div>
+                    <p class="text-slate-400 text-xs sm:text-sm max-w-md">
+                        點擊下方照片可開啟放大檢視。可在代碼中輕鬆替換為您的個人真實照片！
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Feature Image 1 -->
+                    <!-- 💡 替換照片位置 1 (建議尺寸 800x600) -->
+                    <div onclick="openLightbox('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80', '程式開發與邏輯研讀', '專注編寫程式碼與推導演算邏輯的日常', '學習與專案', '800 x 600')" 
+                         class="group relative rounded-2xl overflow-hidden bg-slate-800 cursor-pointer border border-slate-700 aspect-[4/3]">
+                        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80" alt="程式開發" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-90 group-hover:opacity-100">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-4 flex flex-col justify-end">
+                            <span class="text-xs text-brand-300 font-semibold mb-1">程式生活</span>
+                            <h4 class="font-bold text-white text-base">代碼與數理思考</h4>
+                        </div>
+                    </div>
+
+                    <!-- Feature Image 2 -->
+                    <!-- 💡 替換照片位置 2 (建議尺寸 800x600) -->
+                    <div onclick="openLightbox('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80', '讀書沉澱時光', '透過書籍充實專業知識與思想視野', '興趣與生活', '800 x 600')" 
+                         class="group relative rounded-2xl overflow-hidden bg-slate-800 cursor-pointer border border-slate-700 aspect-[4/3]">
+                        <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=800&q=80" alt="閱讀時光" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-90 group-hover:opacity-100">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-4 flex flex-col justify-end">
+                            <span class="text-xs text-amber-300 font-semibold mb-1">生活興趣</span>
+                            <h4 class="font-bold text-white text-base">閱讀與思考靜心</h4>
+                        </div>
+                    </div>
+
+                    <!-- Feature Image 3 -->
+                    <!-- 💡 替換照片位置 3 (建議尺寸 800x600) -->
+                    <div onclick="openLightbox('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80', '黎明數位多媒體系日常', '與同學討論多媒体技術與作品創作', '校園生活', '800 x 600')" 
+                         class="group relative rounded-2xl overflow-hidden bg-slate-800 cursor-pointer border border-slate-700 aspect-[4/3]">
+                        <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80" alt="校園生活" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-90 group-hover:opacity-100">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-4 flex flex-col justify-end">
+                            <span class="text-xs text-sky-300 font-semibold mb-1">黎明校園</span>
+                            <h4 class="font-bold text-white text-base">多媒體互動研討</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SKILLS & INTERACTIVE MATH CANVAS SECTION -->
+        <section id="skills" class="scroll-mt-20">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">專業技能 & 數理畫布</h2>
+                <p class="text-slate-500 mt-2 text-base">將微積分抽象概念與編程代碼結合，實現可視化與技術輸出</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left 3 Skill Detail Cards -->
+                <div class="lg:col-span-7 space-y-6">
+                    
+                    <!-- Coding -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+                                    <i data-lucide="code" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-900 text-lg">寫代碼 (Programming & Web Development)</h3>
+                                    <p class="text-xs text-slate-500">HTML / CSS / JavaScript / 演算法思考</p>
+                                </div>
+                            </div>
+                            <span class="px-2.5 py-1 bg-brand-50 text-brand-700 text-xs font-bold rounded-lg">Core Skill</span>
+                        </div>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            具備前端網頁開發與邏輯構想能力，擅長將微積分等數學公式透過 JavaScript 動態畫布（HTML5 Canvas）實現數據與視覺圖形呈現。
+                        </p>
+                        <!-- Progress bar -->
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-xs font-medium">
+                                <span class="text-slate-600">編程邏輯與程式實作能力</span>
+                                <span class="text-brand-600 font-mono">88%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-brand-600 rounded-full w-[88%]"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calculus -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center">
+                                    <i data-lucide="sigma" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-900 text-lg">微積分 (Calculus & Mathematical Analysis)</h3>
+                                    <p class="text-xs text-slate-500">微分切線 / 積分累積 / 泰勒展開 / 數理建模</p>
+                                </div>
+                            </div>
+                            <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold rounded-lg">Logic Core</span>
+                        </div>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            對微積分有濃厚興趣與紮實推導基礎，能理解變化率、極限逼近與空間幾何推導，賦予寫代碼時強大的問題拆解與演算法推演優勢。
+                        </p>
+                        <!-- Progress bar -->
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-xs font-medium">
+                                <span class="text-slate-600">數理分析與邏輯推導</span>
+                                <span class="text-indigo-600 font-mono">92%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-indigo-600 rounded-full w-[92%]"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Multimedia -->
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-skybrand-500 text-white flex items-center justify-center">
+                                    <i data-lucide="layers" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-slate-900 text-lg">數位多媒體 (Digital Multimedia Design)</h3>
+                                    <p class="text-xs text-slate-500">黎明技術學院專業 / 視覺排版 / 數位內容整合</p>
+                                </div>
+                            </div>
+                            <span class="px-2.5 py-1 bg-sky-50 text-sky-700 text-xs font-bold rounded-lg">Major Dept</span>
+                        </div>
+                        <p class="text-slate-600 text-sm leading-relaxed mb-4">
+                            結合數位多媒體系的創作視野，關注用戶視覺體驗（UI/UX）與簡潔的現代設計規範，打造兼具審美與實用性的數位介面。
+                        </p>
+                        <!-- Progress bar -->
+                        <div class="space-y-1.5">
+                            <div class="flex justify-between text-xs font-medium">
+                                <span class="text-slate-600">多媒體整合與視覺體驗</span>
+                                <span class="text-skybrand-600 font-mono">85%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-skybrand-500 rounded-full w-[85%]"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Interactive Canvas Math Visualizer -->
+                <div class="lg:col-span-5 bg-slate-900 rounded-2xl p-6 text-white border border-slate-800 shadow-lg space-y-4">
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="activity" class="w-5 h-5 text-brand-400"></i>
+                            <h4 class="font-bold text-sm">微積分 & 代碼實時畫布</h4>
+                        </div>
+                        <span id="math-mode-label" class="text-xs font-mono text-slate-400">Mode: Sine & Tangent</span>
+                    </div>
+
+                    <!-- Canvas Box -->
+                    <div class="relative w-full h-52 bg-slate-950 rounded-xl overflow-hidden border border-slate-800">
+                        <canvas id="liveMathCanvas" class="w-full h-full block"></canvas>
+                    </div>
+
+                    <!-- Interactive Mode Buttons -->
+                    <div class="space-y-2 pt-1">
+                        <span class="text-xs text-slate-400 font-mono block">切換微積分動態展示模式：</span>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="setMathMode('sine')" class="py-2 px-2 bg-slate-800 hover:bg-brand-600 text-xs font-medium rounded-lg transition-colors text-center truncate active:scale-95 border border-slate-700">
+                                ① 正弦切線 (f')
+                            </button>
+                            <button onclick="setMathMode('limit')" class="py-2 px-2 bg-slate-800 hover:bg-brand-600 text-xs font-medium rounded-lg transition-colors text-center truncate active:scale-95 border border-slate-700">
+                                ② 泰勒多項式
+                            </button>
+                            <button onclick="setMathMode('vector')" class="py-2 px-2 bg-slate-800 hover:bg-brand-600 text-xs font-medium rounded-lg transition-colors text-center truncate active:scale-95 border border-slate-700">
+                                ③ 粒子數理網格
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="p-3 bg-slate-800/60 rounded-xl text-xs text-slate-400 font-mono leading-relaxed border border-slate-800">
+                        <span class="text-brand-300 font-semibold">// 演算法邏輯：</span><br>
+                        Calculus Derivative Visualization: dy/dx = cos(x). Canvas renders dynamic tangent vectors in real-time.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- FEATURED PROJECTS SECTION -->
+        <section id="projects" class="scroll-mt-20">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">專案作品與實作展示</h2>
+                <p class="text-slate-500 mt-2 text-base">結合多媒體設計與編程技術的學習與創作歷程</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Project 1 -->
+                <div class="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col justify-between">
+                    <div>
+                        <!-- Project Image Container (With photo placeholder comment) -->
+                        <div class="relative overflow-hidden aspect-video bg-slate-100">
+                            <!-- 💡 專案照片位置 1 (建議尺寸 600x400) -->
+                            <img src="https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=600&q=80" alt="微積分視覺化分析儀" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span class="absolute top-3 right-3 px-2.5 py-1 bg-slate-900/80 backdrop-blur-md text-white text-xs font-mono rounded-md">Canvas / JS</span>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <span class="text-xs font-semibold text-brand-600 uppercase tracking-wider">數理應用作品</span>
+                            <h3 class="text-xl font-bold text-slate-900 group-hover:text-brand-600 transition-colors">微積分動態函數視覺化儀</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed">
+                                使用 原生 JS 與 Canvas API 打造的動態函數繪製工具，能夠即時計算連續函數的切線斜率與導函數曲線。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 flex items-center justify-between text-xs font-semibold text-slate-500 border-t border-slate-100 mt-4">
+                        <span>數位多媒體系 課堂專案</span>
+                        <a href="#contact" class="text-brand-600 hover:underline flex items-center gap-1">瞭解更多 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></a>
+                    </div>
+                </div>
+
+                <!-- Project 2 -->
+                <div class="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col justify-between">
+                    <div>
+                        <!-- Project Image Container -->
+                        <div class="relative overflow-hidden aspect-video bg-slate-100">
+                            <!-- 💡 專案照片位置 2 (建議尺寸 600x400) -->
+                            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt="多媒體互動展示" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span class="absolute top-3 right-3 px-2.5 py-1 bg-slate-900/80 backdrop-blur-md text-white text-xs font-mono rounded-md">Multimedia / Web</span>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <span class="text-xs font-semibold text-skybrand-600 uppercase tracking-wider">多媒體創作</span>
+                            <h3 class="text-xl font-bold text-slate-900 group-hover:text-brand-600 transition-colors">極簡風格個人 Web 主頁</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed">
+                                貫徹「簡單生活」哲學的響應式作品集網站。整合 HTML5, Tailwind CSS 與動態圖表，展示個人品牌。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 flex items-center justify-between text-xs font-semibold text-slate-500 border-t border-slate-100 mt-4">
+                        <span>個人代表作</span>
+                        <a href="#contact" class="text-brand-600 hover:underline flex items-center gap-1">瞭解更多 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></a>
+                    </div>
+                </div>
+
+                <!-- Project 3 -->
+                <div class="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-lg transition-all group flex flex-col justify-between">
+                    <div>
+                        <!-- Project Image Container -->
+                        <div class="relative overflow-hidden aspect-video bg-slate-100">
+                            <!-- 💡 專案照片位置 3 (建議尺寸 600x400) -->
+                            <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=600&q=80" alt="閱讀筆記隨筆平台" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span class="absolute top-3 right-3 px-2.5 py-1 bg-slate-900/80 backdrop-blur-md text-white text-xs font-mono rounded-md">Reading / Notes</span>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <span class="text-xs font-semibold text-amber-600 uppercase tracking-wider">生活與學習</span>
+                            <h3 class="text-xl font-bold text-slate-900 group-hover:text-brand-600 transition-colors">靜心閱讀與學習記錄卡</h3>
+                            <p class="text-slate-600 text-sm leading-relaxed">
+                                記錄閱讀書籍心得與數理筆記的模組化管理工具，記錄點滴學習思考與知識累積。
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-6 pt-0 flex items-center justify-between text-xs font-semibold text-slate-500 border-t border-slate-100 mt-4">
+                        <span>自主學習專案</span>
+                        <a href="#contact" class="text-brand-600 hover:underline flex items-center gap-1">瞭解更多 <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i></a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- LIFE GALLERY (生活與日常相簿 - DEDICATED PHOTO SECTION) -->
+        <section id="gallery" class="scroll-mt-20">
+            <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-sm space-y-8">
+                
+                <!-- Section Header -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-100 pb-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-50 text-amber-700 text-xs font-bold mb-2">
+                            <i data-lucide="camera" class="w-3.5 h-3.5"></i>
+                            Personal Moments
+                        </div>
+                        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">生活與日常相簿</h2>
+                        <p class="text-slate-500 mt-1 text-sm">紀錄閱讀、寫代碼、黎明校園生活與靜心思考的點滴時光</p>
+                    </div>
+
+                    <!-- Category Filter Buttons -->
+                    <div class="flex flex-wrap gap-2 text-xs font-medium" id="gallery-filters">
+                        <button onclick="filterGallery('all', this)" class="px-3.5 py-2 rounded-xl bg-slate-900 text-white font-semibold transition-all">全部 (All)</button>
+                        <button onclick="filterGallery('reading', this)" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">學習閱讀</button>
+                        <button onclick="filterGallery('coding', this)" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">程式生活</button>
+                        <button onclick="filterGallery('campus', this)" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">校園日常</button>
+                        <button onclick="filterGallery('life', this)" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all">生活隨筆</button>
+                    </div>
+                </div>
+
+                <!-- Helper Banner for Image Replacement -->
+                <div class="p-4 rounded-xl bg-brand-50/70 border border-brand-100 flex items-center justify-between text-xs text-brand-800">
+                    <span class="flex items-center gap-2 font-medium">
+                        <i data-lucide="info" class="w-4 h-4 text-brand-600 shrink-0"></i>
+                        提示：點擊任何照片可開啟 Modal 放大檢視。您可在原始碼搜尋 <code><!-- 💡 替換相簿照片 --></code> 替換為您的照片檔名。
+                    </span>
+                    <span class="hidden sm:inline font-mono text-[11px] bg-white px-2 py-0.5 rounded border border-brand-200">Recommended size: 800 x 600</span>
+                </div>
+
+                <!-- Photo Grid (6 Photo Placeholders) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="gallery-grid">
+
+                    <!-- PHOTO CARD 1 -->
+                    <!-- 💡 替換相簿照片 1：請修改下方 img src 例如 src="./photo_01.jpg" -->
+                    <div class="gallery-item group relative bg-slate-100 rounded-2xl overflow-hidden border border-slate-200/80 cursor-pointer shadow-2xs hover:shadow-lg transition-all"
+                         data-category="reading"
+                         onclick="openLightbox('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80', '深晨靜心閱讀', '喜歡在清晨時光讀一本好書，汲取新知與思考靈感', '學習閱讀', '800 x 600')">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80" alt="深晨靜心閱讀" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <div class="p-4 bg-white border-t border-slate-100">
+                            <div class="flex items-center justify-between text-xs mb-1">
+                                <span class="font-semibold text-amber-600">學習閱讀</span>
+                                <span class="text-slate-400 font-mono">Photo 01</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm group-hover:text-brand-600 transition-colors">深晨靜心閱讀</h4>
+                            <p class="text-xs text-slate-500 mt-1 line-clamp-1">沉澱心靈，享受簡單生活中的知識汲取</p>
+                        </div>
+                    </div>
+
+                    <!-- PHOTO CARD 2 -->
+                    <!-- 💡 替換相簿照片 2：請修改下方 img src 例如 src="./photo_02.jpg" -->
+                    <div class="gallery-item group relative bg-slate-100 rounded-2xl overflow-hidden border border-slate-200/80 cursor-pointer shadow-2xs hover:shadow-lg transition-all"
+                         data-category="coding"
+                         onclick="openLightbox('https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80', '夜間寫代碼時光', '專注除錯與優化微積分演算法邏輯', '程式生活', '800 x 600')">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="夜間寫代碼時光" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <div class="p-4 bg-white border-t border-slate-100">
+                            <div class="flex items-center justify-between text-xs mb-1">
+                                <span class="font-semibold text-brand-600">程式生活</span>
+                                <span class="text-slate-400 font-mono">Photo 02</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm group-hover:text-brand-600 transition-colors">夜間編程與邏輯思考</h4>
+                            <p class="text-xs text-slate-500 mt-1 line-clamp-1">認真對待每一行代碼與演算細節</p>
+                        </div>
+                    </div>
+
+                    <!-- PHOTO CARD 3 -->
+                    <!-- 💡 替換相簿照片 3：請修改下方 img src 例如 src="./photo_03.jpg" -->
+                    <div class="gallery-item group relative bg-slate-100 rounded-2xl overflow-hidden border border-slate-200/80 cursor-pointer shadow-2xs hover:shadow-lg transition-all"
+                         data-category="campus"
+                         onclick="openLightbox('https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80', '黎明技術學院校園氛圍', '數位多媒體系學習角落與課後討論', '校園日常', '800 x 600')">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80" alt="黎明技術學院校園" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <div class="p-4 bg-white border-t border-slate-100">
+                            <div class="flex items-center justify-between text-xs mb-1">
+                                <span class="font-semibold text-sky-600">校園日常</span>
+                                <span class="text-slate-400 font-mono">Photo 03</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm group-hover:text-brand-600 transition-colors">黎明技術學院校園記憶</h4>
+                            <p class="text-xs text-slate-500 mt-1 line-clamp-1">數位多媒體系的學習與創作步調</p>
+                        </div>
+                    </div>
+
+                    <!-- PHOTO CARD 4 -->
+                    <!-- 💡 替換相簿照片 4：請修改下方 img src 例如 src="./photo_04.jpg" -->
+                    <div class="gallery-item group relative bg-slate-100 rounded-2xl overflow-hidden border border-slate-200/80 cursor-pointer shadow-2xs hover:shadow-lg transition-all"
+                         data-category="life"
+                         onclick="openLightbox('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80', '簡約自然的戶外散步', '工作研讀之餘的放鬆充能，體會生活簡約之美', '生活隨筆', '800 x 600')">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" alt="戶外散步" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <div class="p-4 bg-white border-t border-slate-100">
+                            <div class="flex items-center justify-between text-xs mb-1">
+                                <span class="font-semibold text-emerald-600">生活隨筆</span>
+                                <span class="text-slate-400 font-mono">Photo 04</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm group-hover:text-brand-600 transition-colors">簡單自然的漫步時光</h4>
+                            <p class="text-xs text-slate-500 mt-1 line-clamp-1">簡單生活中的沉澱與靈感捕捉</p>
+                        </div>
+                    </div>
+
+                    <!-- PHOTO CARD 5 -->
+                    <!-- 💡 替換相簿照片 5：請修改下方 img src 例如 src="./photo_05.jpg" -->
+                    <div class="gallery-item group relative bg-slate-100 rounded-2xl overflow-hidden border border-slate-200/80 cursor-pointer shadow-2xs hover:shadow-lg transition-all"
+                         data-category="reading"
+                         onclick="openLightbox('https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80', '微積分與數理筆記手稿', '認真對待每一個公式推導與概念解構', '學習閱讀', '800 x 600')">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=800&q=80" alt="微積分筆記" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <div class="p-4 bg-white border-t border-slate-100">
+                            <div class="flex items-center justify-between text-xs mb-1">
+                                <span class="font-semibold text-amber-600">學習閱讀</span>
+                                <span class="text-slate-400 font-mono">Photo 05</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm group-hover:text-brand-600 transition-colors">微積分與演算法筆記</h4>
+                            <p class="text-xs text-slate-500 mt-1 line-clamp-1">嚴謹紀錄數理思維的演進</p>
+                        </div>
+                    </div>
+
+                    <!-- PHOTO CARD 6 -->
+                    <!-- 💡 替換相簿照片 6：請修改下方 img src 例如 src="./photo_06.jpg" -->
+                    <div class="gallery-item group relative bg-slate-100 rounded-2xl overflow-hidden border border-slate-200/80 cursor-pointer shadow-2xs hover:shadow-lg transition-all"
+                         data-category="life"
+                         onclick="openLightbox('https://images.unsplash.com/photo-1511295742362-92c96b124e52?auto=format&fit=crop&w=800&q=80', '舒適平靜的休息空間', '高品質睡眠與充沛精力的修復基石', '生活隨筆', '800 x 600')">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1511295742362-92c96b124e52?auto=format&fit=crop&w=800&q=80" alt="靜心充能空間" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                        </div>
+                        <div class="p-4 bg-white border-t border-slate-100">
+                            <div class="flex items-center justify-between text-xs mb-1">
+                                <span class="font-semibold text-indigo-600">生活隨筆</span>
+                                <span class="text-slate-400 font-mono">Photo 06</span>
+                            </div>
+                            <h4 class="font-bold text-slate-800 text-sm group-hover:text-brand-600 transition-colors">靜心充能角落</h4>
+                            <p class="text-xs text-slate-500 mt-1 line-clamp-1">睡眠與充能是持續認真的源泉</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- INTERESTS & LIFESTYLE SECTION -->
+        <section id="interests" class="scroll-mt-20">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">個人興趣 & 簡單生活哲學</h2>
+                <p class="text-slate-500 mt-2 text-base">「讀書」累積思維深度，「睡覺」修復專注能量</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                
+                <!-- Interest 1: 讀書 -->
+                <div class="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all space-y-6 relative overflow-hidden group">
+                    <div class="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
+                        <i data-lucide="book-open-check" class="w-8 h-8"></i>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-2xl font-extrabold text-slate-900">讀書 (Reading & Learning)</h3>
+                            <span class="px-3 py-1 bg-amber-100 text-amber-800 text-xs font-semibold rounded-full">核心興趣</span>
+                        </div>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            書籍是我與不同領域專業思想對話的媒介。從技術開發規範、數理演算思考到哲學美學，閱讀能保持思維敏捷與專注。
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-xs text-slate-600 space-y-2">
+                        <span class="font-semibold text-slate-800 block">近期關注閱讀方向：</span>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2.5 py-1 bg-white border border-slate-200 rounded-md">算法導論思維</span>
+                            <span class="px-2.5 py-1 bg-white border border-slate-200 rounded-md">微積分應用歷史</span>
+                            <span class="px-2.5 py-1 bg-white border border-slate-200 rounded-md">數位多媒體介面設計</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interest 2: 睡覺/靜心修復 -->
+                <div class="bg-white p-8 rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all space-y-6 relative overflow-hidden group">
+                    <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold">
+                        <i data-lucide="moon-star" class="w-8 h-8"></i>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-2xl font-extrabold text-slate-900">睡覺 (Rest & Mindfulness)</h3>
+                            <span class="px-3 py-1 bg-indigo-100 text-indigo-800 text-xs font-semibold rounded-full">生活充能</span>
+                        </div>
+                        <p class="text-slate-600 text-sm leading-relaxed">
+                            堅持規律與高品質的睡眠。我相信極佳的休息是清醒思考的先決條件。唯有補足精力，才能在隔天認真對待每一行代碼與每一個任務。
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-xs text-slate-600 space-y-2">
+                        <span class="font-semibold text-slate-800 block">休息與專注原則：</span>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-2.5 py-1 bg-white border border-slate-200 rounded-md">簡單規律作息</span>
+                            <span class="px-2.5 py-1 bg-white border border-slate-200 rounded-md">高效率沉浸思考</span>
+                            <span class="px-2.5 py-1 bg-white border border-slate-200 rounded-md">保持充沛活力</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="scroll-mt-20">
+            <div class="bg-slate-900 rounded-3xl p-8 sm:p-14 text-white shadow-2xl relative overflow-hidden">
+                <!-- Decorative background elements -->
+                <div class="absolute -right-20 -top-20 w-96 h-96 bg-brand-600/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-20 -bottom-20 w-96 h-96 bg-skybrand-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10 max-w-3xl mx-auto text-center space-y-3 mb-12">
+                    <span class="text-brand-400 font-mono text-xs uppercase tracking-wider font-semibold">Get In Touch</span>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">聯繫孫明光</h2>
+                    <p class="text-slate-300 text-sm sm:text-base">
+                        無論是多媒體專案討論、程式開發交流，或是數理微積分研討，都歡迎直接聯繫我！
+                    </p>
+                </div>
+
+                <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    
+                    <!-- Left: Interactive Copy Contact Cards (3 Cards) -->
+                    <div class="lg:col-span-5 space-y-4">
+                        
+                        <!-- Email -->
+                        <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/15 transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-11 h-11 rounded-xl bg-brand-500/20 text-brand-300 flex items-center justify-center shrink-0">
+                                    <i data-lucide="mail" class="w-5 h-5"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <span class="text-[11px] text-slate-400 uppercase font-semibold block">Email 郵件</span>
+                                    <span class="text-sm font-medium text-slate-100 truncate block">bd1151031@venus.lit.edu.tw</span>
+                                </div>
+                            </div>
+                            <button onclick="copyToClipboard('bd1151031@venus.lit.edu.tw', 'Email')" class="px-3 py-1.5 bg-white/15 hover:bg-white/25 active:scale-95 text-xs font-semibold rounded-lg shrink-0 transition-all flex items-center gap-1">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> 複製
+                            </button>
+                        </div>
+
+                        <!-- Line ID -->
+                        <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/15 transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-11 h-11 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0">
+                                    <i data-lucide="message-square" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[11px] text-slate-400 uppercase font-semibold block">Line ID</span>
+                                    <span class="text-sm font-medium text-slate-100 block">korng2907</span>
+                                </div>
+                            </div>
+                            <button onclick="copyToClipboard('korng2907', 'Line ID')" class="px-3 py-1.5 bg-white/15 hover:bg-white/25 active:scale-95 text-xs font-semibold rounded-lg shrink-0 transition-all flex items-center gap-1">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> 複製
+                            </button>
+                        </div>
+
+                        <!-- Instagram -->
+                        <div class="bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl p-5 hover:bg-white/15 transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-11 h-11 rounded-xl bg-rose-500/20 text-rose-300 flex items-center justify-center shrink-0">
+                                    <i data-lucide="instagram" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <span class="text-[11px] text-slate-400 uppercase font-semibold block">Instagram</span>
+                                    <span class="text-sm font-medium text-slate-100 block">@oengmengkarng</span>
+                                </div>
+                            </div>
+                            <button onclick="copyToClipboard('oengmengkarng', 'Instagram')" class="px-3 py-1.5 bg-white/15 hover:bg-white/25 active:scale-95 text-xs font-semibold rounded-lg shrink-0 transition-all flex items-center gap-1">
+                                <i data-lucide="copy" class="w-3.5 h-3.5"></i> 複製
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <!-- Right: Quick Contact Message Form -->
+                    <div class="lg:col-span-7 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-8 space-y-4">
+                        <h4 class="text-lg font-bold text-white flex items-center gap-2">
+                            <i data-lucide="send" class="w-4 h-4 text-brand-400"></i>
+                            發送在線訊息
+                        </h4>
+                        
+                        <form id="contactForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">您的姓名</label>
+                                    <input type="text" required placeholder="請輸入姓名" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">聯絡 Email</label>
+                                    <input type="email" required placeholder="name@example.com" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-500">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">訊息內容</label>
+                                <textarea required rows="3" placeholder="請輸入您想交流的事項或訊息..." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-800/80 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-500"></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-gradient-to-r from-brand-600 to-skybrand-500 hover:from-brand-700 hover:to-skybrand-600 text-white font-bold text-sm rounded-xl shadow-lg transition-all active:scale-98 flex items-center justify-center gap-2">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                                確認送出訊息
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
     </main>
 
-    <footer class="site-footer section-shell">
-      <span>© <span id="year"></span> Lin Yu-An</span>
-      <span>Built with curiosity &amp; code.</span>
-      <a href="#top">回到頂端 ↑</a>
+    <!-- FOOTER -->
+    <footer class="mt-24 border-t border-slate-200 bg-white py-10">
+        <div class="max-w-7xl mx-auto px-4 text-center space-y-3">
+            <div class="flex items-center justify-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold text-sm">孫</div>
+                <span class="font-extrabold text-slate-900 tracking-tight">孫明光</span>
+            </div>
+            <p class="text-xs text-slate-500">黎明技術學院 數位多媒體系 · 「喜歡簡單生活，也喜歡認真對待每一件事。」</p>
+            <p class="text-xs text-slate-400">© <span id="currentYear"></span> Sun Mingguang. All rights reserved.</p>
+        </div>
     </footer>
-  </body>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Set dynamic year
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Mobile Menu Drawer Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Copy to Clipboard & Toast feedback
+        function copyToClipboard(text, label) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            el.setAttribute('readonly', '');
+            el.style.position = 'absolute';
+            el.style.left = '-9999px';
+            document.body.appendChild(el);
+            el.select();
+            
+            let successful = false;
+            try {
+                successful = document.execCommand('copy');
+            } catch (err) {
+                successful = false;
+            }
+            document.body.removeChild(el);
+
+            if (successful) {
+                showToast(`已成功複製 ${label}: ${text}`);
+            } else {
+                showToast(`複製失敗，請手動複製: ${text}`);
+            }
+        }
+
+        let toastTimer;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            
+            toastMsg.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // Contact Form Mock Submit Handler
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            showToast('訊息已成功送出！感謝您的聯繫。');
+            document.getElementById('contactForm').reset();
+        }
+
+        // Gallery Filter Logic
+        function filterGallery(category, btnElement) {
+            // Update button styles
+            const buttons = document.querySelectorAll('#gallery-filters button');
+            buttons.forEach(btn => {
+                btn.className = 'px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all';
+            });
+            btnElement.className = 'px-3.5 py-2 rounded-xl bg-slate-900 text-white font-semibold transition-all';
+
+            // Filter cards
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Lightbox Modal Controls
+        function openLightbox(imgUrl, title, desc, tag, hintSize) {
+            const modal = document.getElementById('lightbox-modal');
+            const modalCard = document.getElementById('lightbox-card');
+            
+            document.getElementById('lightbox-img').src = imgUrl;
+            document.getElementById('lightbox-title').textContent = title;
+            document.getElementById('lightbox-desc').textContent = desc;
+            document.getElementById('lightbox-tag').textContent = tag;
+            document.getElementById('lightbox-hint').textContent = `建議替換照片尺寸: ${hintSize}`;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalCard.classList.remove('scale-95');
+                modalCard.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeLightbox() {
+            const modal = document.getElementById('lightbox-modal');
+            const modalCard = document.getElementById('lightbox-card');
+
+            modal.classList.add('opacity-0');
+            modalCard.classList.remove('scale-100');
+            modalCard.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Close Lightbox on backdrop click
+        document.getElementById('lightbox-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLightbox();
+            }
+        });
+
+        // HTML5 Canvas Math & Calculus Animation System
+        let currentMathMode = 'sine';
+
+        function setMathMode(mode) {
+            currentMathMode = mode;
+            const label = document.getElementById('math-mode-label');
+            if (mode === 'sine') label.textContent = 'Mode: Sine & Tangent (f\')';
+            if (mode === 'limit') label.textContent = 'Mode: Taylor Polynomial (逼近)';
+            if (mode === 'vector') label.textContent = 'Mode: Vector Particles (向量場)';
+        }
+
+        window.onload = function() {
+            const canvas = document.getElementById('liveMathCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            let step = 0;
+            // Particles array for vector mode
+            const particles = [];
+            for(let i = 0; i < 35; i++) {
+                particles.push({
+                    x: Math.random() * 400,
+                    y: Math.random() * 200,
+                    vx: (Math.random() - 0.5) * 1.5,
+                    vy: (Math.random() - 0.5) * 1.5
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                const w = canvas.width;
+                const h = canvas.height;
+                const cy = h / 2;
+
+                // Draw Grid
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+                ctx.lineWidth = 1;
+                for (let x = 0; x < w; x += 25) {
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+                }
+                for (let y = 0; y < h; y += 25) {
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+                }
+
+                if (currentMathMode === 'sine') {
+                    // Mode 1: Sine Wave & Tangent
+                    ctx.beginPath();
+                    ctx.strokeStyle = '#6366F1';
+                    ctx.lineWidth = 2.5;
+
+                    for (let x = 0; x < w; x++) {
+                        const y = cy + Math.sin((x + step) * 0.03) * 35;
+                        if (x === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+
+                    // Tangent Point & Line
+                    const px = w / 2;
+                    const angle = (px + step) * 0.03;
+                    const py = cy + Math.sin(angle) * 35;
+                    const slope = Math.cos(angle) * 35 * 0.03;
+
+                    ctx.fillStyle = '#0EA5E9';
+                    ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
+
+                    ctx.strokeStyle = '#0EA5E9';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(px - 50, py - slope * 50);
+                    ctx.lineTo(px + 50, py + slope * 50);
+                    ctx.stroke();
+
+                } else if (currentMathMode === 'limit') {
+                    // Mode 2: Taylor Limit Approximation Wave
+                    ctx.beginPath();
+                    ctx.strokeStyle = '#38BDF8';
+                    ctx.lineWidth = 2;
+                    for (let x = 0; x < w; x++) {
+                        const wave1 = Math.sin((x + step) * 0.02) * 30;
+                        const wave2 = Math.sin((x - step) * 0.05) * 10;
+                        const y = cy + wave1 + wave2;
+                        if (x === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.stroke();
+
+                } else if (currentMathMode === 'vector') {
+                    // Mode 3: Vector Mesh Particles
+                    ctx.fillStyle = '#818CF8';
+                    particles.forEach(p => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        if (p.x < 0 || p.x > w) p.vx *= -1;
+                        if (p.y < 0 || p.y > h) p.vy *= -1;
+
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Connect lines
+                        particles.forEach(p2 => {
+                            const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                            if (dist < 60) {
+                                ctx.strokeStyle = `rgba(99, 102, 241, ${1 - dist / 60})`;
+                                ctx.lineWidth = 0.5;
+                                ctx.beginPath();
+                                ctx.moveTo(p.x, p.y);
+                                ctx.lineTo(p2.x, p2.y);
+                                ctx.stroke();
+                            }
+                        });
+                    });
+                }
+
+                step += 1.5;
+                requestAnimationFrame(draw);
+            }
+
+            draw();
+        };
+    </script>
+</body>
 </html>
